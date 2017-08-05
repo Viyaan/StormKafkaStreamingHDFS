@@ -33,9 +33,9 @@ Create topic
 
 End with an example of getting some data out of the system or using it for a little demo
 
-##Properties
+####Properties
 
-#hdfs
+#####hdfs
 
 bolt.hdfs.field.delimiter=|
 bolt.hdfs.batch.size = Batch Size
