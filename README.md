@@ -33,17 +33,22 @@ Create topic
 
 End with an example of getting some data out of the system or using it for a little demo
 
-####Properties
+## HDFSProperties
 
-#####hdfs
 
-bolt.hdfs.field.delimiter=|
-bolt.hdfs.batch.size = Batch Size
-bolt.hdfs.file.rotation.size.in.mb  = Max size of file
+bolt.hdfs.field.delimiter=|.
+
+bolt.hdfs.batch.size = Batch Size.
+
+bolt.hdfs.file.rotation.size.in.mb  = Max size of file.
+
 bolt.hdfs.file.rotation.time.min= Max time to write in a file.
-bolt.hdfs.wip.file.path= Destination path in hdfs
+
+bolt.hdfs.wip.file.path= Destination path in hdfs.
+
 bolt.hdfs.finished.file.path = Destination where file is moved after rotation limit is reached.
-bolt.hdfs.file.system.url= Hadoop File System URL
+
+bolt.hdfs.file.system.url= Hadoop File System URL.
 
 ## Running the tests
 
