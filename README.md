@@ -36,17 +36,17 @@ End with an example of getting some data out of the system or using it for a lit
 ## HDFSProperties
 
 
-bolt.hdfs.field.delimiter=|.
+bolt.hdfs.field.delimiter=   Will write pipe("|")-delimited files to the HDFS.
 
-bolt.hdfs.batch.size = Batch Size.
+bolt.hdfs.batch.size = This size denotes After it reaches the specified tuples it will sync filesystem.
 
-bolt.hdfs.file.rotation.size.in.mb  = Max size of file.
+bolt.hdfs.file.rotation.size.in.mb  = It will rotate files when they reach the megabytes in size.
 
-bolt.hdfs.file.rotation.time.min= Max time to write in a file.
+bolt.hdfs.file.rotation.time.min= It will rotate files when they reach the time.
 
 bolt.hdfs.wip.file.path= Destination path in hdfs.
 
-bolt.hdfs.finished.file.path = Destination where file is moved after rotation limit is reached.
+bolt.hdfs.finished.file.path = Destination where files are moved after rotation size or time limit is reached.
 
 bolt.hdfs.file.system.url= Hadoop File System URL.
 
