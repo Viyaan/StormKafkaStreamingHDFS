@@ -26,7 +26,7 @@ import java.util.TimerTask;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.storm.hdfs.bolt.rotation.TimedRotationPolicy;
+import com.kafka.streaming.storm.bolt.rotation.TimedRotationPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
