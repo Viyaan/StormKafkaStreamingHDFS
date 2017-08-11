@@ -83,7 +83,7 @@ public class KafkaSpoutTopology {
         KafkaSpoutTopology kafkaSpoutTestTopology = new KafkaSpoutTopology(loader.getString(ConsumerEnum.ZOOKEEPER.getValue()));
         Config config = new Config();
         config.put(Config.TOPOLOGY_TRIDENT_BATCH_EMIT_INTERVAL_MILLIS, 2000);
-        StormTopology stormTopology = kafkaSpoutTestTopology.buildTopology(loader.getString(ConsumerEnum.ZOOKEEPER.getValue()),loader.getString(ConsumerEnum.KAFKA_TOPIC.getValue()),loader.getString(ConsumerEnum.CONSUMER_GROUP.getValue()),loader.getString(ConsumerEnum.KAFKA_TOPIC.getValue()),loader);
+        StormTopology stormTopology = kafkaSpoutTestTopology.buildTopology(loader.getString(ConsumerEnum.ZOOKEEPER.getValue()),loader.getString(ConsumerEnum.KAFKA_TOPIC.getValue()),loader.getString(ConsumerEnum.CONSUMER_GROUP.getValue()),loader.getString(ConsumerEnum.ZK_ROOT.getValue()),loader);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("KafkaWordCountStorm", config, stormTopology);
         Thread.sleep(10000);
