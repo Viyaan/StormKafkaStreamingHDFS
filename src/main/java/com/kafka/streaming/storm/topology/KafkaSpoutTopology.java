@@ -1,6 +1,16 @@
 package com.kafka.streaming.storm.topology;
 
 
+import org.apache.storm.Config;
+import org.apache.storm.LocalCluster;
+import org.apache.storm.generated.StormTopology;
+import org.apache.storm.kafka.BrokerHosts;
+import org.apache.storm.kafka.KafkaSpout;
+import org.apache.storm.kafka.SpoutConfig;
+import org.apache.storm.kafka.StringScheme;
+import org.apache.storm.kafka.ZkHosts;
+import org.apache.storm.spout.SchemeAsMultiScheme;
+import org.apache.storm.topology.TopologyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,16 +28,6 @@ import com.kafka.streaming.storm.common.rotation.MoveFileAction;
 import com.kafka.streaming.storm.utils.ConsumerEnum;
 import com.kafka.streaming.storm.utils.PropertiesLoader;
 
-import backtype.storm.Config;
-import backtype.storm.LocalCluster;
-import backtype.storm.generated.StormTopology;
-import backtype.storm.spout.SchemeAsMultiScheme;
-import backtype.storm.topology.TopologyBuilder;
-import storm.kafka.BrokerHosts;
-import storm.kafka.KafkaSpout;
-import storm.kafka.SpoutConfig;
-import storm.kafka.StringScheme;
-import storm.kafka.ZkHosts;
 
 
 /**
@@ -54,7 +54,7 @@ public class KafkaSpoutTopology {
         
         SpoutConfig kafkaConfig=new SpoutConfig(zkHosts, topic, zkRoot, groupId);
         kafkaConfig.scheme=new SchemeAsMultiScheme(new StringScheme());
-        kafkaConfig.forceFromStart=true;
+        //kafkaConfig.forceFromStart=true;
         TopologyBuilder builder=new TopologyBuilder();
         builder.setSpout(KafkaSpout.class.getName(), new KafkaSpout(kafkaConfig), PARALLELISM);
         

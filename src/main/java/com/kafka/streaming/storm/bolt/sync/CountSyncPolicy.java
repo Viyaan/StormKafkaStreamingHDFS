@@ -18,7 +18,7 @@
 package com.kafka.streaming.storm.bolt.sync;
 
 
-import backtype.storm.tuple.Tuple;
+import org.apache.storm.tuple.Tuple;
 
 /**
  * SyncPolicy implementation that will trigger a
@@ -33,11 +33,13 @@ public class CountSyncPolicy implements SyncPolicy {
         this.count = count;
     }
 
+    
     public boolean mark(Tuple tuple, long offset) {
         this.executeCount++;
         return this.executeCount >= this.count;
     }
 
+    
     public void reset() {
         this.executeCount = 0;
     }

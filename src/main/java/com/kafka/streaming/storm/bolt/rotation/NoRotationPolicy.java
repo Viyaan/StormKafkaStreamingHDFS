@@ -17,17 +17,24 @@
  */
 package com.kafka.streaming.storm.bolt.rotation;
 
-import backtype.storm.tuple.Tuple;
+import org.apache.storm.tuple.Tuple;
 
 /**
  * File rotation policy that will never rotate...
  * Just one big file. Intended for testing purposes.
  */
 public class NoRotationPolicy implements FileRotationPolicy {
+    
     public boolean mark(Tuple tuple, long offset) {
         return false;
     }
 
+    
     public void reset() {
+    }
+
+    
+    public FileRotationPolicy copy() {
+        return this;
     }
 }

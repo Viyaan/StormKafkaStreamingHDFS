@@ -1,5 +1,3 @@
-package com.kafka.streaming.storm.bolt.sync;
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,8 +15,9 @@ package com.kafka.streaming.storm.bolt.sync;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.kafka.streaming.storm.bolt.sync;
 
-import backtype.storm.tuple.Tuple;
+import org.apache.storm.tuple.Tuple;
 
 import java.io.Serializable;
 
