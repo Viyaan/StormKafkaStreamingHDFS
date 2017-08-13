@@ -59,7 +59,19 @@ bolt.hdfs.file.system.url= Hadoop File System URL.
 ## Dependencies
 
 
-	    <dependency>
+	   <dependencies>
+      <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-client</artifactId>
+         <version>2.2.0</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
          <groupId>org.apache.hadoop</groupId>
          <artifactId>hadoop-hdfs</artifactId>
          <version>2.2.0</version>
@@ -73,19 +85,19 @@ bolt.hdfs.file.system.url= Hadoop File System URL.
       <dependency>
          <groupId>org.apache.storm</groupId>
          <artifactId>storm-core</artifactId>
-         <version>0.9.4</version>
+         <version>1.1.1</version>
       </dependency>
       <!-- https://mvnrepository.com/artifact/org.apache.storm/storm-hdfs -->
       <dependency>
          <groupId>org.apache.storm</groupId>
          <artifactId>storm-hdfs</artifactId>
-         <version>1.1.0</version>
+         <version>1.1.1</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.apache.storm</groupId>
          <artifactId>storm-kafka</artifactId>
-         <version>0.9.4</version>
+         <version>1.1.1</version>
       </dependency>
 
       <dependency>
