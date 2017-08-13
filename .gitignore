@@ -1,2 +1,0 @@
-/target/
-src/main/java/com/kafka/streaming/storm/topology/KafkaSpoutTopology.java
