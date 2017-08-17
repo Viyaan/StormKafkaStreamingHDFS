@@ -5,7 +5,9 @@ import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.kafka.KafkaSpout;
+import org.apache.storm.kafka.KeyValueSchemeAsMultiScheme;
 import org.apache.storm.kafka.SpoutConfig;
+import org.apache.storm.kafka.StringKeyValueScheme;
 import org.apache.storm.kafka.ZkHosts;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichBolt;
@@ -57,6 +59,7 @@ public class KafkaTopology {
     public static SpoutConfig configureKafkaSpout(PropertiesLoader loader) {
     	ZkHosts zkHosts=new ZkHosts(loader.getString(ConsumerEnum.ZOOKEEPER.getValue()));
         SpoutConfig kafkaConfig=new SpoutConfig(zkHosts, loader.getString(ConsumerEnum.KAFKA_TOPIC.getValue()), loader.getString(ConsumerEnum.ZK_ROOT.getValue()), loader.getString(ConsumerEnum.CONSUMER_GROUP.getValue()));
+        kafkaConfig.scheme = new KeyValueSchemeAsMultiScheme(new StringKeyValueScheme());
         return kafkaConfig;
     }
     
