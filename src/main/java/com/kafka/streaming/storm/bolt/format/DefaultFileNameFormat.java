@@ -17,7 +17,7 @@
  */
 package com.kafka.streaming.storm.bolt.format;
 
-import backtype.storm.task.TopologyContext;
+import org.apache.storm.task.TopologyContext;
 
 import java.util.Map;
 
@@ -36,7 +36,11 @@ import java.util.Map;
  *
  */
 public class DefaultFileNameFormat implements FileNameFormat {
-    private String componentId;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String componentId;
     private int taskId;
     private String path = "/storm";
     private String prefix = "";
@@ -69,11 +73,13 @@ public class DefaultFileNameFormat implements FileNameFormat {
         return this;
     }
 
+    
     public void prepare(Map conf, TopologyContext topologyContext) {
         this.componentId = topologyContext.getThisComponentId();
         this.taskId = topologyContext.getThisTaskId();
     }
 
+    
     public String getName(long rotation, long timeStamp) {
         return this.prefix + this.componentId + "-" + this.taskId +  "-" + rotation + "-" + timeStamp + this.extension;
     }

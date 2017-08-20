@@ -18,7 +18,7 @@
 package com.kafka.streaming.storm.bolt.rotation;
 
 
-import backtype.storm.tuple.Tuple;
+import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class FileSizeRotationPolicy implements FileRotationPolicy {
-    private static final Logger LOG = LoggerFactory.getLogger(FileSizeRotationPolicy.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(FileSizeRotationPolicy.class);
 
     public static enum Units {
 
@@ -64,6 +69,11 @@ public class FileSizeRotationPolicy implements FileRotationPolicy {
         this.maxBytes = (long)(count * units.getByteCount());
     }
 
+    protected FileSizeRotationPolicy(long maxBytes) {
+        this.maxBytes = maxBytes;
+    }
+
+    
     public boolean mark(Tuple tuple, long offset) {
         long diff = offset - this.lastOffset;
         this.currentBytesWritten += diff;
@@ -71,9 +81,14 @@ public class FileSizeRotationPolicy implements FileRotationPolicy {
         return this.currentBytesWritten >= this.maxBytes;
     }
 
+    
     public void reset() {
         this.currentBytesWritten = 0;
         this.lastOffset = 0;
     }
 
+    
+    public FileRotationPolicy copy() {
+        return new FileSizeRotationPolicy(this.maxBytes);
+    }
 }

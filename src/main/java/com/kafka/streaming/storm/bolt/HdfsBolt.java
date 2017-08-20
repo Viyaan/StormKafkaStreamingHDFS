@@ -1,16 +1,32 @@
-
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.kafka.streaming.storm.bolt;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.EnumSet;
 import java.util.Map;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hdfs.client.HdfsDataOutputStream;
-import org.apache.hadoop.hdfs.client.HdfsDataOutputStream.SyncFlag;
+import org.apache.storm.task.OutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,18 +34,16 @@ import com.kafka.streaming.storm.bolt.format.FileNameFormat;
 import com.kafka.streaming.storm.bolt.format.RecordFormat;
 import com.kafka.streaming.storm.bolt.rotation.FileRotationPolicy;
 import com.kafka.streaming.storm.bolt.sync.SyncPolicy;
+import com.kafka.streaming.storm.common.Partitioner;
 import com.kafka.streaming.storm.common.rotation.RotationAction;
+import com.kafka.streaming.storm.writer.AbstractHDFSWriter;
+import com.kafka.streaming.storm.writer.HDFSWriter;
 
-import backtype.storm.task.OutputCollector;
-import backtype.storm.task.TopologyContext;
-import backtype.storm.tuple.Tuple;
-
-public class HdfsBolt extends com.kafka.streaming.storm.bolt.AbstractHdfsBolt{
+public class HdfsBolt extends AbstractHdfsBolt{
     private static final Logger LOG = LoggerFactory.getLogger(HdfsBolt.class);
 
     private transient FSDataOutputStream out;
     private RecordFormat format;
-    private long offset = 0;
 
     public HdfsBolt withFsUrl(String fsUrl){
         this.fsUrl = fsUrl;
@@ -66,52 +80,39 @@ public class HdfsBolt extends com.kafka.streaming.storm.bolt.AbstractHdfsBolt{
         return this;
     }
 
-    
+    public HdfsBolt withTickTupleIntervalSeconds(int interval) {
+        this.tickTupleInterval = interval;
+        return this;
+    }
+
+    public HdfsBolt withRetryCount(int fileRetryCount) {
+        this.fileRetryCount = fileRetryCount;
+        return this;
+    }
+
+    public HdfsBolt withPartitioner(Partitioner partitioner) {
+        this.partitioner = partitioner;
+        return this;
+    }
+
+    public HdfsBolt withMaxOpenFiles(int maxOpenFiles) {
+        this.maxOpenFiles = maxOpenFiles;
+        return this;
+    }
+
+    @Override
     public void doPrepare(Map conf, TopologyContext topologyContext, OutputCollector collector) throws IOException {
         LOG.info("Preparing HDFS Bolt...");
         this.fs = FileSystem.get(URI.create(this.fsUrl), hdfsConfig);
     }
 
-    
-    public void execute(Tuple tuple) {
-        try {
-            byte[] bytes = this.format.format(tuple);
-            synchronized (this.writeLock) {
-                out.write(bytes);
-                this.offset += bytes.length;
-
-                if (this.syncPolicy.mark(tuple, this.offset)) {
-                    if (this.out instanceof HdfsDataOutputStream) {
-                        ((HdfsDataOutputStream) this.out).hsync(EnumSet.of(SyncFlag.UPDATE_LENGTH));
-                    } else {
-                        this.out.hsync();
-                    }
-                    this.syncPolicy.reset();
-                }
-            }
-
-            this.collector.ack(tuple);
-
-            if(this.rotationPolicy.mark(tuple, this.offset)){
-                rotateOutputFile(); // synchronized
-                this.offset = 0;
-                this.rotationPolicy.reset();
-            }
-        } catch (IOException e) {
-            LOG.warn("write/sync failed.", e);
-            this.collector.fail(tuple);
-        }
+    @Override
+    protected String getWriterKey(Tuple tuple) {
+        return "CONSTANT";
     }
 
-    
-    void closeOutputFile() throws IOException {
-        this.out.close();
-    }
-
-    
-    Path createOutputFile() throws IOException {
-        Path path = new Path(this.fileNameFormat.getPath(), this.fileNameFormat.getName(this.rotation, System.currentTimeMillis()));
+    protected AbstractHDFSWriter makeNewWriter(Path path, Tuple tuple) throws IOException {
         this.out = this.fs.create(path);
-        return path;
+        return new HDFSWriter(rotationPolicy,path, out, format);
     }
 }
